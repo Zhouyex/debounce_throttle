@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>防抖</title>
+    <style>
+        #area{
+            width: 500px;
+            height: 170px;
+            margin: 40px auto;
+            background-color: #ccc;
+
+            font-size: 104px;
+            color: #fff;
+            line-height: 170px;
+            text-align: center;
+        }
+    
+    </style>
+
+</head>
+<body>
+    <div id="area">
+        <!-- 
+            触发事件后，n秒内函数只能执行一次，如果在这n秒内又触发了该事件
+
+            则重新计算这个n秒，从0开始
+
+            防抖函数分立即执行 和 非立即执行
+
+
+
+
+         -->
+    </div>
+    
+
+    <script>
+        let num = 0;
+        let area = document.querySelector('#area');
+        area.innerHTML = num;
+        function count()
+        {
+            num++
+            area.innerHTML = num;  
+        }
+        
+        //原本执行
+        // area.onmousemove = count;
+      
+
+        
+
+
+        // 非立即执行================================================
+
+        // 触发事件后函数不会立即执行，而是在n秒后执行
+        // 在这n秒内又触发了事件，则重新计算这个n时间
+        // function debounce(fun,wait)
+        // {
+        //     let timeout;
+        //     return function()
+        //     {
+        //         let context = this;
+        //         let args = arguments;
+        //         if(timeout)
+        //         {
+        //             clearTimeout(timeout);
+        //         }
+        //         timeout = setTimeout(()=>{
+        //             fun.apply(context,args)
+        //         },wait)
+                
+        //     }
+        // }
+
+        // area.onmousemove = debounce(count,2000)
+        
+
+        // 立即执行版===============================================
+        // 立即执行就是触发事件后立即执行，n秒内不再触发该事件才能继续往下执行
+        // function debounce(fun,wait)
+        // {
+        //     let timeout;
+        //     return function()
+        //     {
+        //         let context = this;
+        //         let args = arguments;
+        //         if(timeout) clearTimeout(timeout);
+
+        //         let callNow = !timeout;
+        //         timeout = setTimeout(()=>{
+        //             timeout = null;
+        //         },wait)
+
+        //         if(callNow) fun.apply(context,args);
+        //     }
+        // }
+
+        // area.onmousemove = debounce(count,2000)
+
+
+        // ===合并版===================================================
+        function debounce(func,wait,immediate)
+        {
+            let timeout;
+
+            return function () {
+                let context = this;
+                let args = arguments;
+
+                if (timeout) clearTimeout(timeout);
+                if (immediate) {
+                    var callNow = !timeout;
+                    timeout = setTimeout(() => {
+                        timeout = null;
+                    }, wait)
+                    if (callNow) func.apply(context, args)
+                }
+                else {
+                    timeout = setTimeout(function(){
+                        func.apply(context, args)
+                    }, wait);
+                }
+            }
+        }
+        // area.onmousemove = debounce(count,2000,true)
+        area.onmousemove = debounce(count,2000,false)
+
+    
+    </script>
+
+</body>
+</html>
