@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>节流</title>
+    <style>
+        #area{
+            width: 500px;
+            height: 170px;
+            margin: 40px auto;
+            background-color: #ccc;
+
+            font-size: 104px;
+            color: #fff;
+            line-height: 170px;
+            text-align: center;
+        }
+    
+    </style>
+
+</head>
+<body>
+    <div id="area"></div>
+    
+
+    <script>
+        // 节流就是 连续触发事件，但是再 n 秒内只执行一次
+        // 节流会稀释函数的执行频率
+
+        let num = 0;
+
+        let area = document.querySelector('#area');
+
+        function count()
+        {
+            num++
+            area.innerHTML = num;
+        }
+
+        // 事件戳====================== 实现==============================
+        // function throttle(fun, wait) {
+        //     let previous = 0;
+        //     return function() {
+        //         let now = Date.now();
+        //         let context = this;
+        //         let args = arguments;
+        //         if (now - previous > wait) {
+        //             fun.apply(context, args);
+        //             previous = now;
+        //         }
+        //     }
+        // }
+        // area.onmousemove = throttle(count,1000)
+
+        // 时间戳============= 实现============================
+        // function throttle(fun, wait) {
+        //     let timeout;
+        //     return function() {
+        //         let context = this;
+        //         let args = arguments;
+        //         if (!timeout) {
+        //             timeout = setTimeout(() => {
+        //                 timeout = null;
+        //                 fun.apply(context, args)
+        //             }, wait)
+        //         }
+
+        //     }
+        // }
+        // area.onmousemove = throttle(count,1000)
+        // 时间戳版的函数触发是在时间开始的时候，
+        // 而定时器版的函数触发是在时间段内结束的时候。
+
+        // 其实也可以说也是立即执行版和非立即执行版
+
+
+        // ====合并==============================================================
+
+        // type 表示了 type==1 ---->时间戳版 或者  type==2---->定时器版
+        function throttle(fun, wait ,type) {
+            if(type===1){
+                let previous = 0;
+                return function() {
+                let now = Date.now();
+                let context = this;
+                let args = arguments;
+                if (now - previous > wait) {
+                    fun.apply(context, args);
+                    previous = now;
+                }
+            }
+
+            }else if(type===2){
+                let timeout;
+                return function() {
+                let context = this;
+                let args = arguments;
+                if (!timeout) {
+                    timeout = setTimeout(() => {
+                        timeout = null;
+                        fun.apply(context, args)
+                    }, wait)
+                }
+
+            }
+
+            }
+            
+        }
+        
+        area.onmousemove = throttle(count,1000,1)
+        area.onmousemove = throttle(count,1000,2)
+        
+    
+    </script>
+
+</body>
+</html>
